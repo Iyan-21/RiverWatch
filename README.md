@@ -49,3 +49,48 @@ Design notes: the access token is held only in browser memory; the refresh token
 - Sample barangays and coordinates in `V1__auth_schema.sql` are placeholders until the pilot barangays are confirmed (SRS Appendix F).
 - Password reset (FR-006, Should) and the household, alert and check-in features belong to later increments.
 - No automated tests yet. Authorization test suite (NFR-S05) is the next addition.
+
+
+## Database setup (Supabase PostgreSQL)
+
+The system uses PostgreSQL hosted on Supabase. The tables are created automatically by Flyway
+(`backend/src/main/resources/db/migration/V1__auth_schema.sql`) the first time the backend starts.
+
+1. Create a free project at https://supabase.com and set a **database password**.
+2. Click **Connect** and choose **Session pooler**. Note the **host**, **port (5432)**, **database (postgres)**
+   and **user** (it looks like `postgres.<project-ref>`).
+3. In the `backend` folder, copy `.env.example` to `.env` and fill in:
+   ```
+   DB_URL=jdbc:postgresql://<pooler-host>:5432/postgres
+   DB_USER=postgres.<project-ref>
+   DB_PASSWORD=<your database password>
+   JWT_SECRET=<random text, at least 32 characters>
+   ADMIN_NAME=System Administrator
+   ADMIN_EMAIL=<admin email>
+   ADMIN_PASSWORD=<admin password, at least 8 characters>
+   COOKIE_SECURE=false
+   ```
+   `.env` is git-ignored, so passwords are never committed.
+4. Start the backend (see below). On the first run, the tables `barangay`, `user_account`, `user_session`,
+   `audit_log` and `flyway_schema_history` are created, five sample barangays are added, and the
+   administrator account is created from `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+5. In the Supabase **SQL Editor**, run once to block public REST access to the tables:
+   ```sql
+   ALTER TABLE barangay ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE user_account ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE user_session ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE flyway_schema_history ENABLE ROW LEVEL SECURITY;
+   ```
+   The backend connects as the `postgres` role and is not affected.
+
+### Running with IntelliJ IDEA
+- Open the `backend` folder, set the Project SDK to JDK 17 or newer, and let Maven import the dependencies.
+- Run `RiverwatchApplication`. If `.env` is not found, set the run configuration's **Working directory**
+  to the `backend` folder.
+- In a separate terminal: `cd frontend`, `npm install`, `npm run dev`, then open http://localhost:5173.
+
+### Using a local PostgreSQL instead
+Install PostgreSQL 16, then run `CREATE USER riverwatch WITH PASSWORD '...';` and
+`CREATE DATABASE riverwatch OWNER riverwatch;`. Set `DB_URL=jdbc:postgresql://localhost:5432/riverwatch`,
+`DB_USER=riverwatch` and `DB_PASSWORD` in `.env`.
