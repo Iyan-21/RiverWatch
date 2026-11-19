@@ -1,0 +1,35 @@
+spring:
+  config:
+    # Optional local .env file (KEY=value lines). Never commit it (NFR-S08).
+    import: optional:file:.env[.properties]
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+
+riverwatch:
+  jwt-secret: ${JWT_SECRET}
+  access-token-minutes: 30
+  refresh-token-days: 7
+  max-failed-logins: 5
+  lock-minutes: 15
+  cookie-secure: ${COOKIE_SECURE:false}
+  cors-origin: ${CORS_ORIGIN:}
+  admin:
+    name: ${ADMIN_NAME:System Administrator}
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
