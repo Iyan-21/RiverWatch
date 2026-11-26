@@ -10,6 +10,9 @@ import OfficerResidents from './pages/OfficerResidents.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import AdminOfficers from './pages/AdminOfficers.jsx'
 import Profile from './pages/Profile.jsx'
+import ChangePassword from './pages/ChangePassword.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
+import ResetPassword from './pages/ResetPassword.jsx'
 import { Forbidden, NotFound } from './pages/Errors.jsx'
 
 function Root() {
@@ -26,11 +29,14 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Navigate to="/register/resident" replace />} />
         <Route path="/register/:kind" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route element={<RequireAuth />}>
         <Route path="/app" element={<Layout />}>
           <Route path="profile" element={<Profile />} />
+          <Route path="change-password" element={<ChangePassword />} />
           <Route element={<RequireRole roles={['RESIDENT']} />}>
             <Route path="resident" element={<ResidentDashboard />} />
           </Route>
