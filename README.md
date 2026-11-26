@@ -49,3 +49,38 @@ Design notes: the access token is held only in browser memory; the refresh token
 - Sample barangays and coordinates in `V1__auth_schema.sql` are placeholders until the pilot barangays are confirmed (SRS Appendix F).
 - Password reset (FR-006, Should) and the household, alert and check-in features belong to later increments.
 - No automated tests yet. Authorization test suite (NFR-S05) is the next addition.
+## Increment 2: User Profile and Password Management
+
+New in this increment (SRS FR-006, FR-011, NFR-S01, NFR-S03):
+
+| Feature | Frontend | Backend endpoint |
+|---|---|---|
+| View and edit own profile (name, email, mobile) | `/app/profile` | `GET /api/v1/profile`, `PUT /api/v1/profile` |
+| Change password (current password required) | `/app/change-password` | `POST /api/v1/auth/change-password` |
+| Forgot password (email link) | `/forgot-password` | `POST /api/v1/auth/forgot-password` |
+| Reset password with the emailed link | `/reset-password?token=...` | `GET /api/v1/auth/reset-password/validate`, `POST /api/v1/auth/reset-password` |
+
+How it works
+- **Profile:** the server edits only the account in the verified login token. No user id is accepted from the request, so one user cannot modify another user's profile. Email must stay unique.
+- **Change password:** the current password is checked, the new one must be 8 to 72 characters, confirmed, and different from the old one. The new password is stored as a BCrypt hash and all other logins of that user are ended. The old password no longer works.
+- **Forgot / reset password:** the system emails a link with a random 256-bit token. Only the SHA-256 hash of the token is stored (`password_reset_token`). The link expires after 30 minutes and works once; requesting a new link cancels older ones; a new request within 60 seconds is ignored. The response is the same whether or not the email exists. After a reset, all existing logins are ended and any lock on the account is cleared.
+- Database: Flyway migration `V2__password_reset_and_rls.sql` adds `password_reset_token` and turns on row level security for all tables (this also blocks Supabase's public REST API).
+
+### Email setup for password reset
+Add to `backend/.env` (see `.env.example`):
+```
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=<your gmail>
+MAIL_PASSWORD=<Google App password>
+MAIL_FROM=<your gmail>
+APP_BASE_URL=http://localhost:5173
+```
+For a Gmail App password: Google Account → Security → 2-Step Verification → App passwords.
+If `MAIL_HOST` is empty, the reset link is only printed in the backend console (development only).
+
+### Demo script for Increment 2
+1. Log in, open **My profile**, change the name and mobile number, save. Try an email that is already used (rejected) and an invalid mobile number.
+2. Open **Change password**: wrong current password (error), mismatched confirmation (error), then a valid change. Log out and log in with the new password; the old one is rejected.
+3. On the login page click **Forgot password?**, enter your email, open the emailed link, set a new password, and log in with it.
+4. Open the same link again: it is rejected (single use). A link older than 30 minutes is rejected too.
