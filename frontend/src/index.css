@@ -66,3 +66,9 @@ th { color: var(--muted); font-weight: 600; }
 .details { display: grid; gap: .6rem; }
 .details div { display: grid; grid-template-columns: 160px 1fr; }
 .details dt { color: var(--muted); } .details dd { margin: 0; font-weight: 600; }
+
+.right { text-align: right; margin: 0; }
+.form-card { max-width: 560px; display: flex; flex-direction: column; gap: .85rem; }
+.details-grid { display: grid; grid-template-columns: 160px 1fr; gap: .4rem 1rem; margin: 0 0 1rem; }
+.details-grid dt { color: var(--muted); } .details-grid dd { margin: 0; font-weight: 600; }
+.field input[readonly] { background: #f0f4f8; }

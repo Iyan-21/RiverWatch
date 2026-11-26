@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
     try { await client.logout() } finally { setFlash('You have been logged out.'); setUser(null) }
   }, [])
 
-  const value = useMemo(() => ({ user, loading, flash, login, logout }), [user, loading, flash, login, logout])
+  const value = useMemo(() => ({ user, setUser, loading, flash, login, logout }), [user, loading, flash, login, logout])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

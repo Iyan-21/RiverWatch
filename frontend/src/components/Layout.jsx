@@ -2,9 +2,9 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { HOME, useAuth } from '../auth/AuthContext.jsx'
 
 const NAV = {
-  RESIDENT: [['Dashboard', HOME.RESIDENT], ['My profile', '/app/profile']],
-  OFFICER: [['Dashboard', HOME.OFFICER], ['Residents', '/app/officer/residents'], ['My profile', '/app/profile']],
-  ADMIN: [['Dashboard', HOME.ADMIN], ['Officer approvals', '/app/admin/officers'], ['My profile', '/app/profile']],
+  RESIDENT: [['Dashboard', HOME.RESIDENT], ['My profile', '/app/profile'], ['Change password', '/app/change-password']],
+  OFFICER: [['Dashboard', HOME.OFFICER], ['Residents', '/app/officer/residents'], ['My profile', '/app/profile'], ['Change password', '/app/change-password']],
+  ADMIN: [['Dashboard', HOME.ADMIN], ['Officer approvals', '/app/admin/officers'], ['My profile', '/app/profile'], ['Change password', '/app/change-password']],
 }
 const ROLE_LABEL = { RESIDENT: 'Household Resident', OFFICER: 'BDRRM Officer', ADMIN: 'System Administrator' }
 

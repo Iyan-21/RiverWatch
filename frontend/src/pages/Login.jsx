@@ -46,6 +46,7 @@ export default function Login() {
           <input id="password" type="password" autoComplete="current-password" value={form.password} onChange={set('password')} />
         </Field>
         <button className="btn primary" disabled={busy}>{busy ? 'Logging in…' : 'Log in'}</button>
+        <p className="small right"><Link to="/forgot-password">Forgot password?</Link></p>
         <p className="muted small">
           New here? <Link to="/register/resident">Register as a resident</Link> or{' '}
           <Link to="/register/officer">as a BDRRM officer</Link>.

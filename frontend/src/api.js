@@ -54,7 +54,7 @@ async function send(path, { method = 'GET', body } = {}) {
 
 export async function api(path, options = {}) {
   let res = await send(path, options)
-  if (res.status === 401 && accessToken && !path.startsWith('/auth/')) {
+  if (res.status === 401 && accessToken && path !== '/auth/login' && path !== '/auth/refresh') {
     const renewed = await refreshSession() // access token expired: try the refresh cookie once
     if (renewed) res = await send(path, options)
   }

@@ -44,7 +44,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(a -> a
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/v1/auth/register/**", "/api/v1/auth/login",
-                                 "/api/v1/auth/refresh", "/api/v1/auth/logout").permitAll()
+                                 "/api/v1/auth/refresh", "/api/v1/auth/logout",
+                                 "/api/v1/auth/forgot-password", "/api/v1/auth/reset-password/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/barangays").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/officer/**").hasRole("OFFICER")
